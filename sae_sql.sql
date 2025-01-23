@@ -9,7 +9,7 @@ DROP TABLE IF EXISTS materiau;
 
 
 
-CREATE TABLE IF EXISTS utilisateur (
+CREATE TABLE IF NOT EXISTS utilisateur (
     id_utilisateur INT AUTO_INCREMENT,
     login VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
@@ -20,25 +20,25 @@ CREATE TABLE IF EXISTS utilisateur (
     PRIMARY KEY (id_utilisateur)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
-CREATE TABLE IF EXISTS type_meuble (
+CREATE TABLE IF NOT EXISTS type_meuble (
     id_type INT AUTO_INCREMENT,
     libelle_type VARCHAR(255),
     PRIMARY KEY (id_type)
 );
 
-CREATE TABLE IF EXISTS materiau (
+CREATE TABLE IF NOT EXISTS materiau (
     id_materiau INT AUTO_INCREMENT,
     libelle_materiau VARCHAR(255),
     PRIMARY KEY (id_materiau)
 );
 
-CREATE TABLE IF EXISTS etat (
+CREATE TABLE IF NOT EXISTS etat (
    id_etat INT AUTO_INCREMENT,
    libelle_etat VARCHAR(255),
    PRIMARY KEY (id_etat)
 );
 
-CREATE TABLE IF EXISTS meuble (
+CREATE TABLE IF NOT EXISTS meuble (
     id_meuble INT AUTO_INCREMENT,
     id_type INT,
     id_materiau INT,
@@ -53,7 +53,7 @@ CREATE TABLE IF EXISTS meuble (
     FOREIGN KEY (id_materiau) REFERENCES materiau(id_materiau)
 );
 
-CREATE TABLE IF EXISTS commande (
+CREATE TABLE IF NOT EXISTS commande (
     id_commande INT AUTO_INCREMENT,
     data_achat DATE,
     etat_id INT,
@@ -63,7 +63,7 @@ CREATE TABLE IF EXISTS commande (
     FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(id_utilisateur)
 );
 
-CREATE TABLE IF EXISTS ligne_panier (
+CREATE TABLE IF NOT EXISTS ligne_panier (
     id_utilisateur INT,
     id_meuble INT,
     quantite INT,
@@ -72,7 +72,7 @@ CREATE TABLE IF EXISTS ligne_panier (
     FOREIGN KEY (id_meuble) REFERENCES meuble(id_meuble)
 );
 
-CREATE TABLE IF EXISTS ligne_commande (
+CREATE TABLE IF NOT EXISTS ligne_commande (
     id_commande INT,
     id_meuble INT,
     prix DECIMAL(15,2),
