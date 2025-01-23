@@ -48,6 +48,7 @@ CREATE TABLE IF NOT EXISTS meuble (
     prix_meuble DECIMAL(15,2),
     fournisseur VARCHAR(255),
     marque VARCHAR(255),
+    image VARCHAR(255),
     PRIMARY KEY (id_meuble),
     FOREIGN KEY (id_type) REFERENCES type_meuble(id_type),
     FOREIGN KEY (id_materiau) REFERENCES materiau(id_materiau)
