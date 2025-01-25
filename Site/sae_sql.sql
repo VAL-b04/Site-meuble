@@ -49,6 +49,7 @@ CREATE TABLE IF NOT EXISTS meuble (
     fournisseur VARCHAR(255),
     marque VARCHAR(255),
     image VARCHAR(255),
+    stock INT,
     PRIMARY KEY (id_meuble),
     FOREIGN KEY (id_type) REFERENCES type_meuble(id_type),
     FOREIGN KEY (id_materiau) REFERENCES materiau(id_materiau)
@@ -82,16 +83,15 @@ CREATE TABLE IF NOT EXISTS ligne_commande (
     FOREIGN KEY (id_meuble) REFERENCES meuble(id_meuble)
 );
 
-
 INSERT INTO utilisateur(id_utilisateur,login,email,password,role,nom,est_actif) VALUES
 (1,'admin','admin@admin.fr',
-    'sha256$dPL3oH9ug1wjJqva$2b341da75a4257607c841eb0dbbacb76e780f4015f0499bb1a164de2a893fdbf',
+    'scrypt:32768:8:1$irSP6dJEjy1yXof2$56295be51bb989f467598b63ba6022405139656d6609df8a71768d42738995a21605c9acbac42058790d30fd3adaaec56df272d24bed8385e66229c81e71a4f4',
     'ROLE_admin','admin','1'),
 (2,'client','client@client.fr',
-    'sha256$1GAmexw1DkXqlTKK$31d359e9adeea1154f24491edaa55000ee248f290b49b7420ced542c1bf4cf7d',
+    'scrypt:32768:8:1$iFP1d8bdBmhW6Sgc$7950bf6d2336d6c9387fb610ddaec958469d42003fdff6f8cf5a39cf37301195d2e5cad195e6f588b3644d2a9116fa1636eb400b0cb5537603035d9016c15910',
     'ROLE_client','client','1'),
 (3,'client2','client2@client2.fr',
-    'sha256$MjhdGuDELhI82lKY$2161be4a68a9f236a27781a7f981a531d11fdc50e4112d912a7754de2dfa0422',
+    'scrypt:32768:8:1$l3UTNxiLZGuBKGkg$ae3af0d19f0d16d4a495aa633a1cd31ac5ae18f98a06ace037c0f4fb228ed86a2b6abc64262316d0dac936eb72a67ae82cd4d4e4847ee0fb0b19686ee31194b3',
     'ROLE_client','client2','1');
 
 INSERT INTO type_meuble(id_type, libelle_type) VALUES
@@ -112,22 +112,22 @@ INSERT INTO etat(id_etat, libelle_etat) VALUES
 (3, 'Livrée');
 
 
-INSERT INTO meuble(id_meuble, id_type, id_materiau, nom_meuble, largeur, hauteur, prix_meuble, fournisseur, marque, image) VALUES
-(1, 1, 1, 'Table en bois massif', 150.00, 75.00, 200.00, 'Fournisseur A', 'Marque X', 'table_en_bois_massif.jpg'),
-(2, 2, 2, 'Chaise en métal', 45.00, 90.00, 80.00, 'Fournisseur B', 'Marque Y', 'chaise_en_metal.jpg'),
-(3, 3, 3, 'Canapé en plastique', 200.00, 85.00, 350.00, 'Fournisseur C', 'Marque Z', 'canape_en_plastique.png'),
-(4, 1, 1, 'Bureau en bois', 120.00, 75.00, 180.00, 'Fournisseur A', 'Marque X', 'bureau_en_bois.jpg'),
-(5, 2, 1, 'Tabouret en bois', 30.00, 50.00, 50.00, 'Fournisseur D', 'Marque W', 'tabouret_en_bois.jpg'),
-(6, 1, 2, 'Table en métal', 140.00, 78.00, 250.00, 'Fournisseur B', 'Marque Y', 'table_en_metal.jpg'),
-(7, 3, 2, 'Fauteuil en métal', 90.00, 100.00, 150.00, 'Fournisseur C', 'Marque Z', 'fauteuil_en_metal.jpg'),
-(8, 3, 3, 'Canapé en tissu', 220.00, 95.00, 400.00, 'Fournisseur D', 'Marque W', 'canap_en_tissus.webp'),
-(9, 2, 3, 'Chaise en plastique', 50.00, 95.00, 70.00, 'Fournisseur A', 'Marque X', 'chaise_en_plastoc.jpg'),
-(10, 1, 3, 'Bureau en plastique', 110.00, 75.00, 120.00, 'Fournisseur E', 'Marque V','bureau_en_platoc.webp'),
-(11, 1, 1, 'Table basse en bois', 100.00, 45.00, 100.00, 'Fournisseur A', 'Marque X', 'table_basse_en_bois.jpg'),
-(12, 2, 1, 'Chaise pliante en bois', 40.00, 85.00, 60.00, 'Fournisseur B', 'Marque Y', 'chaise_pliante_bois.jpg'),
-(13, 3, 1, 'Banquette en bois', 180.00, 80.00, 300.00, 'Fournisseur D', 'Marque W', 'banquette_bois.jpg'),
-(14, 3, 2, 'Fauteuil en cuir et métal', 95.00, 110.00, 500.00, 'Fournisseur E', 'Marque V', 'fauteuil_cuir_metal.webp'),
-(15, 1, 2, 'Console en métal', 130.00, 70.00, 180.00, 'Fournisseur C', 'Marque Z', 'console_metal.webp');
+INSERT INTO meuble(id_meuble, id_type, id_materiau, nom_meuble, largeur, hauteur, prix_meuble, fournisseur, marque, image, stock) VALUES
+(1, 1, 1, 'Table en bois massif', 150.00, 75.00, 200.00, 'Fournisseur A', 'Marque X', 'table_en_bois_massif.jpg', 5),
+(2, 2, 2, 'Chaise en métal', 45.00, 90.00, 80.00, 'Fournisseur B', 'Marque Y', 'chaise_en_metal.jpg', 8),
+(3, 3, 3, 'Canapé en plastique', 200.00, 85.00, 350.00, 'Fournisseur C', 'Marque Z', 'canape_en_plastique.png', 9),
+(4, 1, 1, 'Bureau en bois', 120.00, 75.00, 180.00, 'Fournisseur A', 'Marque X', 'bureau_en_bois.jpg', 8),
+(5, 2, 1, 'Tabouret en bois', 30.00, 50.00, 50.00, 'Fournisseur D', 'Marque W', 'tabouret_en_bois.jpg', 4),
+(6, 1, 2, 'Table en métal', 140.00, 78.00, 250.00, 'Fournisseur B', 'Marque Y', 'table_en_metal.jpg', 3),
+(7, 3, 2, 'Fauteuil en métal', 90.00, 100.00, 150.00, 'Fournisseur C', 'Marque Z', 'fauteuil_en_metal.jpg', 1),
+(8, 3, 3, 'Canapé en tissu', 220.00, 95.00, 400.00, 'Fournisseur D', 'Marque W', 'canap_en_tissus.webp'; 4),
+(9, 2, 3, 'Chaise en plastique', 50.00, 95.00, 70.00, 'Fournisseur A', 'Marque X', 'chaise_en_plastoc.jpg', 3),
+(10, 1, 3, 'Bureau en plastique', 110.00, 75.00, 120.00, 'Fournisseur E', 'Marque V','bureau_en_platoc.webp', 2),
+(11, 1, 1, 'Table basse en bois', 100.00, 45.00, 100.00, 'Fournisseur A', 'Marque X', 'table_basse_en_bois.jpg', 7),
+(12, 2, 1, 'Chaise pliante en bois', 40.00, 85.00, 60.00, 'Fournisseur B', 'Marque Y', 'chaise_pliante_bois.jpg', 5),
+(13, 3, 1, 'Banquette en bois', 180.00, 80.00, 300.00, 'Fournisseur D', 'Marque W', 'banquette_bois.jpg', 4),
+(14, 3, 2, 'Fauteuil en cuir et métal', 95.00, 110.00, 500.00, 'Fournisseur E', 'Marque V', 'fauteuil_cuir_metal.webp', 11),
+(15, 1, 2, 'Console en métal', 130.00, 70.00, 180.00, 'Fournisseur C', 'Marque Z', 'console_metal.webp', 15);
 
 
 
