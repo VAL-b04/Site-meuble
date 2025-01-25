@@ -120,7 +120,7 @@ INSERT INTO meuble(id_meuble, id_type, id_materiau, nom_meuble, largeur, hauteur
 (5, 2, 1, 'Tabouret en bois', 30.00, 50.00, 50.00, 'Fournisseur D', 'Marque W', 'tabouret_en_bois.jpg', 4),
 (6, 1, 2, 'Table en métal', 140.00, 78.00, 250.00, 'Fournisseur B', 'Marque Y', 'table_en_metal.jpg', 3),
 (7, 3, 2, 'Fauteuil en métal', 90.00, 100.00, 150.00, 'Fournisseur C', 'Marque Z', 'fauteuil_en_metal.jpg', 1),
-(8, 3, 3, 'Canapé en tissu', 220.00, 95.00, 400.00, 'Fournisseur D', 'Marque W', 'canap_en_tissus.webp'; 4),
+(8, 3, 3, 'Canapé en tissu', 220.00, 95.00, 400.00, 'Fournisseur D', 'Marque W', 'canap_en_tissus.webp', 4),
 (9, 2, 3, 'Chaise en plastique', 50.00, 95.00, 70.00, 'Fournisseur A', 'Marque X', 'chaise_en_plastoc.jpg', 3),
 (10, 1, 3, 'Bureau en plastique', 110.00, 75.00, 120.00, 'Fournisseur E', 'Marque V','bureau_en_platoc.webp', 2),
 (11, 1, 1, 'Table basse en bois', 100.00, 45.00, 100.00, 'Fournisseur A', 'Marque X', 'table_basse_en_bois.jpg', 7),
