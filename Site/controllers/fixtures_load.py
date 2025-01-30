@@ -11,26 +11,9 @@ fixtures_load = Blueprint('fixtures_load', __name__,
 @fixtures_load.route('/base/init')
 def fct_fixtures_load():
     mycursor = get_db().cursor()
-    ####### Résolution probleme de synthaxe si problème de synthaxe avec afficher l'autre 
-    tables = [
-        "ligne_commande", "ligne_panier", "commande",
-        "meuble", "utilisateur", "etat", "type_meuble", "materiau"
-    ]
+    sql = '''DROP TABLE IF EXISTS ligne_commande,ligne_panier, commande,meuble,utilisateur,etat,type_meuble,materiau;   '''
 
-    for table in tables:
-        sql = f"DROP TABLE IF EXISTS {table};"
-        
-        ############## Probleme de synthaxe pour mariaDB ne fonctionne pas 
-        # sql = '''DROP TABLE IF EXISTS ligne_commande;
-        # DROP TABLE IF EXISTS ligne_panier;
-        # DROP TABLE IF EXISTS commande;
-        # DROP TABLE IF EXISTS meuble;
-        # DROP TABLE IF EXISTS utilisateur;
-        # DROP TABLE IF EXISTS etat;
-        # DROP TABLE IF EXISTS type_meuble;
-        # DROP TABLE IF EXISTS materiau;   '''
-
-        mycursor.execute(sql)
+    mycursor.execute(sql)
 
 
     sql='''
