@@ -1,9 +1,9 @@
-# Site meuble test
+# Site meuble    test de test 
 
 
 ## Site commercial    
 
-(https://login.github.io/projet/)
+[SITE](Ayoubim39120.pythonanywhere.com)
 
 ## Membres du groupe :
 
@@ -14,4 +14,3 @@
 [AYOUB CHAKIRI](mailto:ayoub.chakiri@edu.univ-fcomte.fr) 
 
 [LAURA BORNET](mailto:laura.bornert@edu.univ-fcomte.fr)  
-
