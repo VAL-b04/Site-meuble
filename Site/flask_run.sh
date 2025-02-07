@@ -5,10 +5,10 @@
 
 # pour tester votre application, lancer la commande dans un terminal : bash flask_run.sh
 
-HOST=serveurmysql
-LOGIN=login
-PASSWORD=secret
-DATABASE=BDD_login
+HOST=localhost
+LOGIN=lbornert
+PASSWORD=mon_mot_de_passe
+DATABASE=SAE_FLASK
 
 sed -i "s/host=.*/host=\"${HOST}\",/g" connexion_db.py
 sed -i "s/user=.*/user=\"${LOGIN}\",/g" connexion_db.py
@@ -46,5 +46,5 @@ gnome-terminal --tab -- ./connect.sh  &
 
 #python app.py
 killall python3
-flask --debug  --app app  run   --host 0.0.0.0  &
+flask --debug  --app app  run --port=5003  --host 0.0.0.0  &
 firefox 127.0.0.1:5000
