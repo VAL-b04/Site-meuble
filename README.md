@@ -15,4 +15,3 @@
 
 [LAURA BORNET](mailto:laura.bornert@edu.univ-fcomte.fr)  
 
-(https://www.youtube.com/watch?v=9ZVMGGjSbws&t=149s)
