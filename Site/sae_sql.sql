@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS meuble (
     hauteur DECIMAL(15,2),
     prix_meuble DECIMAL(15,2),
     fournisseur VARCHAR(255),
-    marque VARCHAR(255),
+    En placeARCHAR(255),
     image VARCHAR(255),
     stock INT,
     PRIMARY KEY (id_meuble),
@@ -113,21 +113,21 @@ INSERT INTO etat(id_etat, libelle_etat) VALUES
 
 
 INSERT INTO meuble(id_meuble, id_type, id_materiau, nom_meuble, largeur, hauteur, prix_meuble, fournisseur, marque, image, stock) VALUES
-(1, 1, 1, 'Table en bois massif', 150.00, 75.00, 200.00, 'Fournisseur A', 'Marque X', 'table_en_bois_massif.jpg', 5),
-(2, 2, 2, 'Chaise en métal', 45.00, 90.00, 80.00, 'Fournisseur B', 'Marque Y', 'chaise_en_metal.jpg', 8),
-(3, 3, 3, 'Canapé en plastique', 200.00, 85.00, 350.00, 'Fournisseur C', 'Marque Z', 'canape_plastiq.jpg', 9),
-(4, 1, 1, 'Bureau en bois', 120.00, 75.00, 180.00, 'Fournisseur A', 'Marque X', 'bureau_en_bois.jpg', 8),
-(5, 2, 1, 'Tabouret en bois', 30.00, 50.00, 50.00, 'Fournisseur D', 'Marque W', 'tabouret_en_bois.jpg', 4),
-(6, 1, 2, 'Table en métal', 140.00, 78.00, 250.00, 'Fournisseur B', 'Marque Y', 'table_en_metal.jpg', 3),
-(7, 3, 2, 'Fauteuil en métal', 90.00, 100.00, 150.00, 'Fournisseur C', 'Marque Z', 'fauteuil_en_metal.jpg', 1),
-(8, 3, 3, 'Canapé en tissu', 220.00, 95.00, 400.00, 'Fournisseur D', 'Marque W', 'canap_en_tissus.webp', 4),
-(9, 2, 3, 'Chaise en plastique', 50.00, 95.00, 70.00, 'Fournisseur A', 'Marque X', 'chaise_en_plastoc.jpg', 3),
-(10, 1, 3, 'Bureau en plastique', 110.00, 75.00, 120.00, 'Fournisseur E', 'Marque V','bureau_plast.jpeg', 2),
-(11, 1, 1, 'Table basse en bois', 100.00, 45.00, 100.00, 'Fournisseur A', 'Marque X', 'table_basse_en_bois.jpg', 7),
-(12, 2, 1, 'Chaise pliante en bois', 40.00, 85.00, 60.00, 'Fournisseur B', 'Marque Y', 'chaise_pliante_bois.jpg', 5),
-(13, 3, 1, 'Banquette en bois', 180.00, 80.00, 300.00, 'Fournisseur D', 'Marque W', 'banquette_bois.jpg', 4),
-(14, 3, 2, 'Fauteuil en cuir et métal', 95.00, 110.00, 500.00, 'Fournisseur E', 'Marque V', 'fauteuil_cuir_metal.webp', 11),
-(15, 1, 2, 'Console en métal', 130.00, 70.00, 180.00, 'Fournisseur C', 'Marque Z', 'console_metal.webp', 15);
+(1, 1, 1, 'Table en bois massif', 150.00, 75.00, 200.00, 'Eminza', 'Valentine', 'table_en_bois_massif.jpg', 5),
+(2, 2, 2, 'Chaise en métal', 45.00, 90.00, 80.00, 'Ikea', 'Quartz', 'chaise_en_metal.jpg', 8),
+(3, 3, 3, 'Canapé en plastique', 200.00, 85.00, 350.00, 'Pipo', 'Passion Meuble', 'canape_plastiq.jpg', 9),
+(4, 1, 1, 'Bureau en bois', 120.00, 75.00, 180.00, 'Emninza', 'Valentine', 'bureau_en_bois.jpg', 8),
+(5, 2, 1, 'Tabouret en bois', 30.00, 50.00, 50.00, 'Moldue', 'Ontop', 'tabouret_en_bois.jpg', 4),
+(6, 1, 2, 'Table en métal', 140.00, 78.00, 250.00, 'Eminza', 'Quartz', 'table_en_metal.jpg', 3),
+(7, 3, 2, 'Fauteuil en métal', 90.00, 100.00, 150.00, 'Pipo', 'Passion Meuble', 'fauteuil_en_metal.jpg', 1),
+(8, 3, 3, 'Canapé en tissu', 220.00, 95.00, 400.00, 'Moldue', 'Ontop', 'canap_en_tissus.webp', 4),
+(9, 2, 3, 'Chaise en plastique', 50.00, 95.00, 70.00, 'Ikea', 'Valentine', 'chaise_en_plastoc.jpg', 3),
+(10, 1, 3, 'Bureau en plastique', 110.00, 75.00, 120.00, 'Cadecap', 'En place','bureau_plast.jpeg', 2),
+(11, 1, 1, 'Table basse en bois', 100.00, 45.00, 100.00, 'Ikea', 'Valentine', 'table_basse_en_bois.jpg', 7),
+(12, 2, 1, 'Chaise pliante en bois', 40.00, 85.00, 60.00, 'Eminza', 'Quartz', 'chaise_pliante_bois.jpg', 5),
+(13, 3, 1, 'Banquette en bois', 180.00, 80.00, 300.00, 'Moldue', 'Ontop', 'banquette_bois.jpg', 4),
+(14, 3, 2, 'Fauteuil en cuir et métal', 95.00, 110.00, 500.00, 'Cadecap', 'En place', 'fauteuil_cuir_metal.webp', 11),
+(15, 1, 2, 'Console en métal', 130.00, 70.00, 180.00, 'Pipo', 'PassionMeuble', 'console_metal.webp', 15);
 
 
 
