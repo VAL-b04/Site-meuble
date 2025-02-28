@@ -49,12 +49,12 @@ def client_article_details():
     # '''
     # mycursor.execute(sql, (id_client, id_article))
     # nb_commentaires = mycursor.fetchone()
-    return render_template('client/article_info/article_details.html'
+    return render_template('client/article_info/meuble_details.html'
                            , article=article
                            # , commentaires=commentaires
                            , commandes_articles=commandes_articles
                            # , note=note
-                            , nb_commentaires=nb_commentaires
+                           , nb_commentaires=nb_commentaires
                            )
 
 @client_commentaire.route('/client/commentaire/add', methods=['POST'])

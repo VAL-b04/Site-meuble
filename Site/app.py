@@ -8,14 +8,14 @@ from flask import Blueprint
 from controllers.auth_security import *
 from controllers.fixtures_load import *
 
-from controllers.client_article import *
+from controllers.client_meuble import *
 from controllers.client_panier import *
 from controllers.client_commande import *
 from controllers.client_commentaire import *
 from controllers.client_coordonnee import *
 
 from controllers.admin_article import *
-from controllers.admin_declinaison_article import *
+from controllers.admin_declinaison_meuble import *
 from controllers.admin_commande import *
 from controllers.admin_type_article import *
 from controllers.admin_dataviz import *
@@ -39,7 +39,7 @@ def show_accueil():
         if session['role'] == 'ROLE_admin':
             return redirect('/admin/commande/index')
         else:
-            return redirect('/client/article/show')
+            return redirect('/client/meuble/show')
     return render_template('auth/layout.html')
 
 ##################
@@ -68,7 +68,7 @@ def before_request():
 app.register_blueprint(auth_security)
 app.register_blueprint(fixtures_load)
 
-app.register_blueprint(client_article)
+app.register_blueprint(client_meuble)
 app.register_blueprint(client_commande)
 app.register_blueprint(client_commentaire)
 app.register_blueprint(client_panier)

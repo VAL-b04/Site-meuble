@@ -11,7 +11,7 @@ fixtures_load = Blueprint('fixtures_load', __name__,
 @fixtures_load.route('/base/init')
 def fct_fixtures_load():
     mycursor = get_db().cursor()
-    sql = '''DROP TABLE IF EXISTS ligne_commande,ligne_panier, commande,meuble,utilisateur,etat,type_meuble,materiau;   '''
+    sql = '''DROP TABLE IF EXISTS ligne_commande,ligne_panier, declinaison_meuble, commande,meuble,utilisateur,etat,type_meuble,materiau;   '''
 
     mycursor.execute(sql)
 
@@ -45,15 +45,15 @@ def fct_fixtures_load():
 
     sql=''' 
     CREATE TABLE IF NOT EXISTS type_meuble (
-    id_type INT AUTO_INCREMENT,
-    libelle_type VARCHAR(255),
-    PRIMARY KEY (id_type)
+    id_type_meuble INT AUTO_INCREMENT,
+    libelle_type_meuble VARCHAR(255),
+    PRIMARY KEY (id_type_meuble)
 )  DEFAULT CHARSET utf8;  
     '''
     mycursor.execute(sql)
 
     sql=''' 
-INSERT INTO type_meuble(id_type, libelle_type) VALUES
+INSERT INTO type_meuble(id_type_meuble, libelle_type_meuble) VALUES
 (1, 'Table'),
 (2, 'Chaise'),
 (3, 'Canapé');
@@ -112,7 +112,7 @@ INSERT INTO materiau(id_materiau, libelle_materiau) VALUES
     image VARCHAR(255),
     stock INT,
     PRIMARY KEY (id_meuble),
-    FOREIGN KEY (id_type) REFERENCES type_meuble(id_type),
+    FOREIGN KEY (id_type) REFERENCES type_meuble(id_type_meuble),
     FOREIGN KEY (id_materiau) REFERENCES materiau(id_materiau)
 ) DEFAULT CHARSET=utf8;  
      '''
@@ -140,6 +140,102 @@ INSERT INTO materiau(id_materiau, libelle_materiau) VALUES
                  '''
     mycursor.execute(sql)
 
+    sql = '''
+        CREATE TABLE declinaison_meuble(
+   id_declinaison_meuble INT AUTO_INCREMENT,
+   stock INT,
+   prix_declinaison DECIMAL(19,4),
+   image_declinaison VARCHAR(255),
+   meuble_id INT NOT NULL,
+   materiau_id  INT NOT NULL,
+   PRIMARY KEY(id_declinaison_meuble),
+   FOREIGN KEY(meuble_id) REFERENCES meuble(id_meuble),
+   FOREIGN KEY(materiau_id) REFERENCES materiau(id_materiau)
+);
+    '''
+
+    mycursor.execute(sql)
+
+    sql = '''
+        INSERT INTO declinaison_meuble (stock, prix_declinaison, image_declinaison, meuble_id, materiau_id) VALUES
+/* Déclinaisons pour la Table en bois massif */
+(5, 200.00, 'table_en_bois_massif.jpg', 1, 1),
+(3, 210.00, 'table_en_bois_massif.jpg', 1, 2),
+(2, 195.00, 'table_en_bois_massif.jpg', 1, 3),
+
+/* Déclinaisons pour la Chaise en métal */
+(8, 80.00, 'chaise_en_metal.jpg', 2, 2),
+(4, 85.00, 'chaise_en_metal.jpg', 2, 1),
+(3, 78.00, 'chaise_en_metal.jpg', 2, 3),
+
+/* Déclinaisons pour le Canapé en plastique */
+(9, 350.00, 'canape_plastiq.jpg', 3, 3),
+(6, 340.00, 'canape_plastiq.jpg', 3, 2),
+(3, 360.00, 'canape_plastiq.jpg', 3, 1),
+
+/* Déclinaisons pour le Bureau en bois */
+(8, 180.00, 'bureau_en_bois.jpg', 4, 1),
+(4, 175.00, 'bureau_en_bois.jpg', 4, 2),
+(2, 185.00, 'bureau_en_bois.jpg', 4, 3),
+
+/* Déclinaisons pour le Tabouret en bois */
+(4, 50.00, 'tabouret_en_bois.jpg', 5, 1),
+(2, 55.00, 'tabouret_en_bois.jpg', 5, 2),
+(1, 48.00, 'tabouret_en_bois.jpg', 5, 3),
+
+/* Déclinaisons pour la Table en métal */
+(3, 250.00, 'table_en_metal.jpg', 6, 2),
+(2, 260.00, 'table_en_metal.jpg', 6, 1),
+(1, 245.00, 'table_en_metal.jpg', 6, 3),
+
+/* Déclinaisons pour le Fauteuil en métal */
+(1, 150.00, 'fauteuil_en_metal.jpg', 7, 2),
+(2, 155.00, 'fauteuil_en_metal.jpg', 7, 1),
+(1, 148.00, 'fauteuil_en_metal.jpg', 7, 3),
+
+/* Déclinaisons pour le Canapé en tissu */
+(4, 400.00, 'canap_en_tissus.webp', 8, 3),
+(3, 390.00, 'canap_en_tissus.webp', 8, 2),
+(2, 410.00, 'canap_en_tissus.webp', 8, 1),
+
+/* Déclinaisons pour la Chaise en plastique */
+(3, 70.00, 'chaise_en_plastoc.jpg', 9, 3),
+(2, 75.00, 'chaise_en_plastoc.jpg', 9, 2),
+(1, 65.00, 'chaise_en_plastoc.jpg', 9, 1),
+
+/* Déclinaisons pour le Bureau en plastique */
+(2, 120.00, 'bureau_plast.jpeg', 10, 3),
+(1, 130.00, 'bureau_plast.jpeg', 10, 2),
+(1, 110.00, 'bureau_plast.jpeg', 10, 1),
+
+/* Déclinaisons pour la Table basse en bois */
+(7, 100.00, 'table_basse_en_bois.jpg', 11, 1),
+(5, 105.00, 'table_basse_en_bois.jpg', 11, 2),
+(3, 98.00, 'table_basse_en_bois.jpg', 11, 3),
+
+/* Déclinaisons pour la Chaise pliante en bois */
+(5, 60.00, 'chaise_pliante_bois.jpg', 12, 1),
+(3, 65.00, 'chaise_pliante_bois.jpg', 12, 2),
+(2, 58.00, 'chaise_pliante_bois.jpg', 12, 3),
+
+/* Déclinaisons pour la Banquette en bois */
+(4, 300.00, 'banquette_bois.jpg', 13, 1),
+(2, 310.00, 'banquette_bois.jpg', 13, 2),
+(1, 290.00, 'banquette_bois.jpg', 13, 3),
+
+/* Déclinaisons pour le Fauteuil en cuir et métal */
+(11, 500.00, 'fauteuil_cuir_metal.webp', 14, 2),
+(7, 520.00, 'fauteuil_cuir_metal.webp', 14, 1),
+(5, 490.00, 'fauteuil_cuir_metal.webp', 14, 3),
+
+/* Déclinaisons pour la Console en métal */
+(15, 180.00, 'console_metal.webp', 15, 2),
+(10, 190.00, 'console_metal.webp', 15, 1),
+(7, 175.00, 'console_metal.webp', 15, 3);
+    '''
+
+    mycursor.execute(sql)
+
     sql = ''' 
     CREATE TABLE IF NOT EXISTS commande (
     id_commande INT AUTO_INCREMENT,
@@ -162,19 +258,20 @@ INSERT INTO materiau(id_materiau, libelle_materiau) VALUES
 
 
     sql = ''' 
-    CREATE TABLE IF NOT EXISTS ligne_panier (
-    id_utilisateur INT,
-    id_meuble INT,
-    quantite INT,
+    CREATE TABLE ligne_panier (
+    utilisateur_id INT,
+    declinaison_meuble_id INT,
     date_ajout DATE,
-    FOREIGN KEY (id_utilisateur) REFERENCES utilisateur(id_utilisateur),
-    FOREIGN KEY (id_meuble) REFERENCES meuble(id_meuble)
-);  
+    quantite_lp INT,
+    PRIMARY KEY(utilisateur_id, declinaison_meuble_id),
+    FOREIGN KEY(utilisateur_id) REFERENCES utilisateur(id_utilisateur),
+    FOREIGN KEY(declinaison_meuble_id) REFERENCES declinaison_meuble(id_declinaison_meuble)
+); 
          '''
     mycursor.execute(sql)
 
     sql = ''' 
-        INSERT INTO ligne_panier(id_utilisateur, id_meuble, quantite, date_ajout) VALUES
+        INSERT INTO ligne_panier(utilisateur_id, declinaison_meuble_id, quantite_lp, date_ajout) VALUES
 (2, 1, 2, '2025-01-05'),
 (3, 2, 1, '2025-01-10'),
 (2, 3, 1, '2025-01-12'); 
@@ -182,18 +279,19 @@ INSERT INTO materiau(id_materiau, libelle_materiau) VALUES
     mycursor.execute(sql)
 
     sql = ''' 
-        CREATE TABLE IF NOT EXISTS ligne_commande (
-    id_commande INT,
-    id_meuble INT,
-    prix DECIMAL(15,2),
-    quantite INT,
-    FOREIGN KEY (id_commande) REFERENCES commande(id_commande),
-    FOREIGN KEY (id_meuble) REFERENCES meuble(id_meuble)
+        CREATE TABLE ligne_commande (
+    commande_id INT,
+    declinaison_meuble_id INT,
+    quantite_lc INT,
+    prix_lc DECIMAL(19,4),
+    PRIMARY KEY(commande_id, declinaison_meuble_id),
+    FOREIGN KEY(commande_id) REFERENCES commande(id_commande),
+    FOREIGN KEY(declinaison_meuble_id) REFERENCES declinaison_meuble(id_declinaison_meuble)
 );  '''
     mycursor.execute(sql)
 
     sql = ''' 
-            INSERT INTO ligne_commande(id_commande, id_meuble, prix, quantite) VALUES
+            INSERT INTO ligne_commande(commande_id, declinaison_meuble_id, prix_lc, quantite_lc) VALUES
 (1, 1, 150.00, 2),
 (2, 2, 75.00, 1),
 (3, 3, 300.00, 1); 

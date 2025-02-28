@@ -11,10 +11,14 @@ admin_type_article = Blueprint('admin_type_article', __name__,
 @admin_type_article.route('/admin/type-article/show')
 def show_type_article():
     mycursor = get_db().cursor()
-    # sql = '''         '''
-    # mycursor.execute(sql)
-    # types_article = mycursor.fetchall()
-    types_article=[]
+    sql = ''' SELECT tm.id_type_meuble, tm.libelle_type_meuble AS libelle, COUNT(m.id_meuble) AS nbr_articles
+FROM type_meuble tm
+LEFT JOIN meuble m ON tm.id_type_meuble = m.id_type
+GROUP BY tm.id_type_meuble;
+ '''
+    mycursor.execute(sql)
+    types_article = mycursor.fetchall()
+    print(f"Lignes récupérées : {types_article}")  # Affiche les données récupérées
     return render_template('admin/type_article/show_type_article.html', types_article=types_article)
 
 @admin_type_article.route('/admin/type-article/add', methods=['GET'])
@@ -26,7 +30,7 @@ def valid_add_type_article():
     libelle = request.form.get('libelle', '')
     tuple_insert = (libelle,)
     mycursor = get_db().cursor()
-    sql = '''         '''
+    sql = ''' INSERT INTO type_meuble (libelle_type_meuble) VALUES (%s)       '''
     mycursor.execute(sql, tuple_insert)
     get_db().commit()
     message = u'type ajouté , libellé :'+libelle
@@ -37,6 +41,13 @@ def valid_add_type_article():
 def delete_type_article():
     id_type_article = request.args.get('id_type_article', '')
     mycursor = get_db().cursor()
+    sql = '''
+            DELETE FROM type_meuble where id_type_meuble =%s;
+            '''
+    tuple_del = (id_type_article)
+    mycursor.execute(sql, tuple_del)
+
+    get_db().commit()
 
     flash(u'suppression type article , id : ' + id_type_article, 'alert-success')
     return redirect('/admin/type-article/show')
@@ -44,10 +55,15 @@ def delete_type_article():
 @admin_type_article.route('/admin/type-article/edit', methods=['GET'])
 def edit_type_article():
     id_type_article = request.args.get('id_type_article', '')
+    print(f"ID reçu : {id_type_article}")
     mycursor = get_db().cursor()
-    sql = '''   '''
+
+    sql = ''' SELECT id_type_meuble, libelle_type_meuble AS libelle FROM type_meuble WHERE id_type_meuble =%s;  '''
+
     mycursor.execute(sql, (id_type_article,))
+
     type_article = mycursor.fetchone()
+
     return render_template('admin/type_article/edit_type_article.html', type_article=type_article)
 
 @admin_type_article.route('/admin/type-article/edit', methods=['POST'])
@@ -56,7 +72,7 @@ def valid_edit_type_article():
     id_type_article = request.form.get('id_type_article', '')
     tuple_update = (libelle, id_type_article)
     mycursor = get_db().cursor()
-    sql = '''   '''
+    sql = ''' UPDATE type_meuble SET libelle_type_meuble = %s WHERE id_type_meuble = %s   '''
     mycursor.execute(sql, tuple_update)
     get_db().commit()
     flash(u'type article modifié, id: ' + id_type_article + " libelle : " + libelle, 'alert-success')
