@@ -214,7 +214,7 @@ def fct_fixtures_load():
     (%s, %s, %s, %s, %s, %s),
     (%s, %s, %s, %s, %s, %s)
     '''
-    cles_usb_data = [
+    meuble_data = [
         ('Banquette', 'Banquette en bois de sapin coupé à la mains', 1200.00, 100 ,'banquette_bois.jpg', 5),
         ('Bureau', 'Bureau en bois de forêt', 40.99, 50 , 'bureau_en_bois.jpg', 6),
         ('Bureau_Plast', 'Bureau en plastique de luxe fait maison', 3045.89, 200 , 'bureau_en_plastoc.webp',6),
@@ -231,7 +231,7 @@ def fct_fixtures_load():
         ('Table_Meta', 'Table en métal ideal pour diner a Versaille', 56.78, 55,'table_en_metal.jpg', 1),
         ('Tabouret', 'Tabouret pour étudiant', 1.00, 29, 'tabouret_en_bois.jpg', 8)
     ]
-    mycursor.execute(sql, [item for sublist in cles_usb_data for item in sublist])
+    mycursor.execute(sql, [item for sublist in meuble_data for item in sublist])
 
     sql = '''
     INSERT INTO commentaire (utilisateur_id, meuble_id, date_publication, commentaire, valider) VALUES
