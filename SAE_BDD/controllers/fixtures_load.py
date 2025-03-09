@@ -13,8 +13,12 @@ fixtures_load = Blueprint('fixtures_load', __name__,
 def fct_fixtures_load():
     mycursor = get_db().cursor()
 
+    mycursor.execute("SET FOREIGN_KEY_CHECKS = 0")
+
     sql = '''DROP TABLE IF EXISTS utilisateur, type_meuble, etat, meuble, commande, ligne_commande, ligne_panier, adresse, liste_envies, historique, declinaison, commentaire'''
     mycursor.execute(sql)
+
+    mycursor.execute("SET FOREIGN_KEY_CHECKS = 1")
 
     sql = '''
     CREATE TABLE utilisateur(
