@@ -1,0 +1,118 @@
+{% extends "admin/layout_admin.html" %}
+{% block body %}
+    <div class="container-fluid">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h4 class="m-0 font-weight-bold text-primary">Gestion des stocks</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nom du meuble</th>
+                                <th>Nombre de déclinaisons</th>
+                                <th>Stock total</th>
+                                <th>Détails du stock</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for meuble in meubles %}
+                                <tr {% if meuble.alerte_stock %} class="table-danger" {% endif %}>
+                                    <td>{{ meuble.id_meuble }}</td>
+                                    <td>{{ meuble.nom_meuble }}</td>
+                                    <td>{{ meuble.nb_declinaisons }}</td>
+                                    <td>
+                                        {% if meuble.stock_total is none %}
+                                            0
+                                        {% else %}
+                                            {{ meuble.stock_total }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if meuble.details_stock %}
+                                            <div class="d-flex flex-column">
+                                                {% for detail in meuble.details_stock %}
+                                                    <div class="mb-1">
+                                                        {{ detail.detail }}
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        {% else %}
+                                            Aucune déclinaison
+                                        {% endif %}
+                                        {% if meuble.alerte_stock %}
+                                            <span class="badge bg-danger text-white">Rupture de stock</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a href="/admin/declinaison_meuble/add?id_meuble={{ meuble.id_meuble }}" 
+                                               class="btn btn-primary btn-sm">
+                                                <i class="fas fa-edit"></i> Gérer les déclinaisons
+                                            </a>
+                                            <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" 
+                                                    data-bs-target="#stockModal{{ meuble.id_meuble }}">
+                                                <i class="fas fa-boxes"></i> Gérer le stock
+                                            </button>
+                                            <form action="{{ url_for('admin_meuble.admin_meuble_stock_delete') }}" method="post" class="d-inline">
+                                                <input type="hidden" name="id_meuble" value="{{ meuble.id_meuble }}">
+                                                <button type="submit" class="btn btn-danger btn-sm" 
+                                                        onclick="return confirm('Êtes-vous sûr de vouloir supprimer le stock de ce meuble ?')"
+                                                        {% if meuble.nb_commandes > 0 %}disabled title="Impossible de supprimer un meuble avec des commandes"{% endif %}>
+                                                    <i class="fas fa-trash"></i> Supprimer
+                                                </button>
+                                            </form>
+                                        </div>
+
+                                        <!-- Modal pour la gestion du stock -->
+                                        <div class="modal fade" id="stockModal{{ meuble.id_meuble }}" tabindex="-1" 
+                                             aria-labelledby="stockModalLabel{{ meuble.id_meuble }}" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="stockModalLabel{{ meuble.id_meuble }}">
+                                                            Gestion du stock - {{ meuble.nom_meuble }}
+                                                        </h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        {% if meuble.details_stock %}
+                                                            <div class="d-flex flex-column">
+                                                                {% for detail in meuble.details_stock %}
+                                                                    <div class="mb-3">
+                                                                        <form action="{{ url_for('admin_meuble.admin_meuble_stock_update') }}" method="post">
+                                                                            <div class="d-flex align-items-center">
+                                                                                <span class="me-2">{{ detail.detail.split('(')[0] }}</span>
+                                                                                <input type="hidden" name="id_declinaison" value="{{ detail.id }}">
+                                                                                <div class="input-group input-group-sm" style="width: 150px;">
+                                                                                    <input type="number" name="stock" class="form-control" 
+                                                                                           value="{{ detail.detail.split('(')[1].split(')')[0] }}" min="0">
+                                                                                    <button type="submit" class="btn btn-warning">
+                                                                                        <i class="fas fa-save"></i>
+                                                                                    </button>
+                                                                                </div>
+                                                                            </div>
+                                                                        </form>
+                                                                    </div>
+                                                                {% endfor %}
+                                                            </div>
+                                                        {% else %}
+                                                            <p>Aucune déclinaison à gérer</p>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %} 

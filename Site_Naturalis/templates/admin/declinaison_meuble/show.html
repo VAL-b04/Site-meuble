@@ -1,0 +1,39 @@
+{% extends "admin/layout_admin.html" %}
+{% block body %}
+    <div class="container-fluid">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h4 class="m-0 font-weight-bold text-primary">Gestion des déclinaisons de matériaux</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Meuble</th>
+                                <th>Nombre de déclinaisons</th>
+                                <th>Matériaux disponibles</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for meuble in meubles %}
+                                <tr>
+                                    <td>{{ meuble.nom_meuble }}</td>
+                                    <td>{{ meuble.nb_declinaisons }}</td>
+                                    <td>{{ meuble.materiaux }}</td>
+                                    <td>
+                                        <a href="/admin/declinaison_meuble/add?id_meuble={{ meuble.id_meuble }}" 
+                                           class="btn btn-primary btn-sm">
+                                            <i class="fas fa-plus"></i> Ajouter une déclinaison
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %} 

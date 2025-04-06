@@ -1,0 +1,91 @@
+{#
+meubles (tableau de dictionnaires)
+* tableau de "meuble"
+    * id_meuble, nom, type_meuble_id, prix_meuble
+    * option :
+        * stock ,
+        * nb_avis ,
+        * nb_declinaisons
+#}
+{% extends 'admin/layout_admin.html' %}
+
+{% block title %}
+    <title>Administration des meubles</title>
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h3>Les meubles</h3>
+        <a class="btn btn-primary m-2" href="/admin/meuble/add">Ajouter un meuble</a>
+        <table class="table">
+            <thead class="thead-dark">
+            <tr>
+                <th>Nom</th>
+                <th>Prix</th>
+                <th>Stock</th>
+                <th>Type</th>
+                <th>Commentaires</th>
+                <th>Avis</th>
+                <th>Note moyenne</th>
+                <th>Image</th>
+                <th>Opérations</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if meubles %}
+                {% for ligne in meubles %}
+                    <tr>
+                        <td>{{ ligne.nom_meuble }}</td>
+                        <td>{{ ligne.prix_meuble }} €</td>
+                        <td>{{ ligne.disponible }}</td>
+                        <td>{{ ligne.libelle_type_meuble }}</td>
+                        <td>
+                            {% if ligne.nb_commentaires > 0 %}
+                                <a href="/admin/meuble/commentaires?id_meuble={{ ligne.id_meuble }}">
+                                    {{ ligne.nb_commentaires }} commentaire(s)
+                                </a>
+                            {% else %}
+                                0 commentaire
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if ligne.nb_avis > 0 %}
+                                {{ ligne.nb_avis }} avis
+                            {% else %}
+                                0 avis
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if ligne.moyenne_notes > 0 %}
+                                {{ "%.1f"|format(ligne.moyenne_notes) }}/5
+                            {% else %}
+                                Pas de note
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if ligne.image_meuble %}
+                                <img style="width:40px;height:40px" src="{{ url_for('static', filename='images/') }}{{ ligne.image_meuble }}" alt="image meuble">
+                            {% else %}
+                                <img style="width:40px;height:40px" src="{{ url_for('static', filename='images/no_photo.jpeg') }}" alt="image meuble">
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a class="btn btn-outline-danger" href="/admin/meuble/delete?id_meuble={{ ligne.id_meuble }}"
+                               onclick="return confirm('Are you sure?')">supprimer</a>
+                            <a class="btn btn-outline-warning" href="/admin/meuble/edit?id_meuble={{ ligne.id_meuble }}">editer</a>
+                            <a class="btn btn-outline-warning"
+                               href="/admin/meuble/commentaires?id_meuble={{ ligne.id_meuble }}">commentaires</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td>
+                        pas de meuble
+                    </td>
+                </tr>
+            {% endif %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

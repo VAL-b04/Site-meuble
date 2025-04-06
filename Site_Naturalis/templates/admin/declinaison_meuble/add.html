@@ -1,0 +1,55 @@
+{% extends "admin/layout_admin.html" %}
+{% block body %}
+    <div class="container-fluid">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h4 class="m-0 font-weight-bold text-primary">Ajouter une déclinaison</h4>
+            </div>
+            <div class="card-body">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+                
+                <form method="post" action="/admin/declinaison_meuble/add">
+                    <div class="form-group">
+                        <label for="id_meuble">Meuble</label>
+                        <select class="form-control" id="id_meuble" name="id_meuble" required>
+                            {% for meuble in meubles %}
+                                <option value="{{ meuble.id_meuble }}">{{ meuble.nom_meuble }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="id_materiau">Matériau</label>
+                        <select class="form-control" id="id_materiau" name="id_materiau" required>
+                            {% for materiau in materiaux %}
+                                <option value="{{ materiau.id_materiau }}">{{ materiau.libelle_materiau }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="prix">Prix (€)</label>
+                        <input type="number" class="form-control" id="prix" name="prix" step="0.01" min="0" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="stock">Stock</label>
+                        <input type="number" class="form-control" id="stock" name="stock" min="0" required>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Ajouter</button>
+                    <a href="/admin/declinaison_meuble/show" class="btn btn-secondary">Annuler</a>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %} 

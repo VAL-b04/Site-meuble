@@ -1,0 +1,124 @@
+{% extends 'admin/layout_admin.html' %}
+
+{% block title %}
+    <title>Visualisation des stocks</title>
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h2 class="mb-4">Visualisation des stocks</h2>
+
+        <!-- Tableau des stocks -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4>Tableau des stocks par déclinaison</h4>
+            </div>
+            <div class="card-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Meuble</th>
+                            <th>Matériau</th>
+                            <th>Stock</th>
+                            <th>Prix unitaire</th>
+                            <th>Coût total du stock</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in stocks_data %}
+                            <tr>
+                                <td>{{ item.nom_meuble }}</td>
+                                <td>{{ item.libelle_materiau }}</td>
+                                <td>{{ item.stock }}</td>
+                                <td>{{ "%.2f"|format(item.prix_declinaison) }} €</td>
+                                <td>{{ "%.2f"|format(item.cout_stock) }} €</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Graphiques -->
+        <div class="row">
+            <!-- Graphique du nombre d'articles en stock -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Nombre d'articles en stock par déclinaison</h4>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="stockChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Graphique du coût du stock -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Coût du stock par déclinaison</h4>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="coutChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts pour les graphiques -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Configuration des graphiques
+        const labels = {{ labels|tojson }};
+        const stockData = {{ stock_values|tojson }};
+        const coutData = {{ cout_values|tojson }};
+
+        // Graphique du nombre d'articles en stock
+        new Chart(document.getElementById('stockChart'), {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Nombre d\'articles en stock',
+                    data: stockData,
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Graphique du coût du stock
+        new Chart(document.getElementById('coutChart'), {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Coût du stock (€)',
+                    data: coutData,
+                    backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+{% endblock %} 

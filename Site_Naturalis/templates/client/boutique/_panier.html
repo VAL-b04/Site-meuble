@@ -1,0 +1,55 @@
+<div class="col-7">
+    {% if articles_panier | length >= 1 %}
+        <h3>Liste des meubles dans mon panier</h3>
+        <table class="table table-hover table-responsive">
+            <tr>
+                <th style="width: 300px">Nom</th>
+                <th style="width: 50px">Quantité</th>
+                <th style="width: 50px">Prix</th>
+                <th style="width: 100px">Sous-Total</th>
+                <th style="width: 400px">Action</th>
+            </tr>
+            {% for item in articles_panier %}
+                <tr>
+                    <td>
+                        {{ item.nom_meuble }}
+                        {% if item.nb_declinaisons > 1 %}
+                            <small class="text-muted">({{ item.libelle_materiau }})</small>
+                        {% endif %}
+                    </td>
+                    <td>{{ item.quantite_lp }}</td>
+                    <td>{{ item.prix_declinaison }} €</td>
+                    <td>{{ "{:,.2f} €".format(item.prix_declinaison * item.quantite_lp) }}</td>
+                    <td>
+                        <form action="/client/panier/delete" style="display: inline-block;" method="post">
+                            <input type="hidden" name="id_declinaison_meuble" value="{{ item.declinaison_meuble_id }}">
+                            <button class="btn btn-primary"> -</button>
+                        </form>
+
+                        <form action="/client/panier/delete/line" style="display: inline-block;" method="post">
+                            <input type="hidden" name="id_declinaison_meuble" value="{{ item.declinaison_meuble_id }}">
+                            <button class="btn btn-primary">Supprimer</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        <div class="row">
+            <div class="col">
+                <form action="/client/panier/vider" style="display: inline-block;" method="post">
+                    <button class="btn btn-danger">Vider le panier</button>
+                </form>
+                <form action="/client/commande/valide" style="display: inline-block;" method="post">
+                    <button class="btn btn-success">Passer la commande</button>
+                </form>
+            </div>
+            <div class="col text-end">
+                <h4>Total : {{ "{:,.2f} €".format(prix_total_panier) }}</h4>
+            </div>
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            Votre panier est vide
+        </div>
+    {% endif %}
+</div>

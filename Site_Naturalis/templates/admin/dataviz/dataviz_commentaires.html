@@ -1,0 +1,299 @@
+{% extends 'admin/layout_admin.html' %}
+
+{% block javascripts %}
+    {{ super() }}
+{% endblock %}
+
+{% block javascripts_head %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+{% endblock %}
+
+{% block title %}
+    <title>Statistiques des commentaires par catégorie</title>
+{% endblock %}
+
+{% block body %}
+    <br>
+    <h2>Statistiques des commentaires par catégorie</h2>
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <select id="categorySelect" class="form-select" onchange="loadArticlesStats(this.value)">
+                <option value="">Sélectionnez une catégorie</option>
+                {% for category in categories %}
+                    <option value="{{ category.id_type_meuble }}">{{ category.libelle_type_meuble }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <div id="articlesStats" style="display: none;">
+        <h3>Statistiques par article</h3>
+        <table class="table">
+            <thead class="thead-dark">
+            <tr>
+                <th>Article</th>
+                <th>Nombre de notes</th>
+                <th>Note moyenne</th>
+                <th>Nombre de commentaires</th>
+                <th>Commentaires validés</th>
+            </tr>
+            </thead>
+            <tbody id="articlesTableBody">
+            </tbody>
+        </table>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div style="width: 100%; height: 400px; border: #0a53be 1px solid;">
+                    <canvas id="articleNotesChart"></canvas>
+                </div>
+                <p class="text-center">Note moyenne par article</p>
+            </div>
+            <div class="col-md-6">
+                <div style="width: 100%; height: 400px; border: #0a53be 1px solid;">
+                    <canvas id="articleCommentsChart"></canvas>
+                </div>
+                <p class="text-center">Nombre de commentaires par article</p>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div style="width: 100%; height: 400px; border: #0a53be 1px solid;">
+                    <canvas id="articleNbNotesChart"></canvas>
+                </div>
+                <p class="text-center">Nombre de notes par article</p>
+            </div>
+        </div>
+    </div>
+
+    <h2>Statistiques globales par catégorie</h2>
+    <table class="table">
+        <thead class="thead-dark">
+        <tr>
+            <th>Catégorie</th>
+            <th>Nombre de notes</th>
+            <th>Note moyenne</th>
+            <th>Nombre de commentaires</th>
+            <th>Commentaires validés</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if datas_show | length >= 1 %}
+            {% for ligne in datas_show %}
+                <tr>
+                    <td>{{ ligne.libelle_type_meuble }}</td>
+                    <td>{{ ligne.nb_notes }}</td>
+                    <td>{{ "%.1f"|format(ligne.moyenne_notes) }}/5</td>
+                    <td>{{ ligne.nb_commentaires }}</td>
+                    <td>{{ ligne.nb_commentaires_valides }}</td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr><td colspan="5">Aucune donnée disponible</td></tr>
+        {% endif %}
+        </tbody>
+    </table>
+
+    <h2>Visualisation des données globales</h2>
+    <div class="row">
+        <div class="col-md-6">
+            <div style="width: 100%; height: 400px; border: #0a53be 1px solid;">
+                <canvas id="globalNotesChart"></canvas>
+            </div>
+            <p class="text-center">Note moyenne par catégorie</p>
+        </div>
+        <div class="col-md-6">
+            <div style="width: 100%; height: 400px; border: #0a53be 1px solid;">
+                <canvas id="globalCommentsChart"></canvas>
+            </div>
+            <p class="text-center">Nombre de commentaires par catégorie</p>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div style="width: 100%; height: 400px; border: #0a53be 1px solid;">
+                <canvas id="globalNbNotesChart"></canvas>
+            </div>
+            <p class="text-center">Nombre de notes par catégorie</p>
+        </div>
+    </div>
+
+    <script>
+        // Graphiques globaux
+        var globalNotesChart = new Chart(document.getElementById("globalNotesChart"), {
+            type: "bar",
+            data: {
+                labels: {{ labels | safe }},
+                datasets: [{
+                    label: "Note moyenne (/5)",
+                    data: {{ values | safe }},
+                    fill: false,
+                    backgroundColor: ["#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850",
+                        "#faf24c", "#6a6ce7", "#55f68f", "#D0c309", "#c45000"],
+                    borderColor: "rgb(75,192,192)",
+                    lineTension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 5
+                    }
+                }
+            }
+        });
+
+        var globalCommentsChart = new Chart(document.getElementById("globalCommentsChart"), {
+            type: 'pie',
+            data: {
+                labels: {{ labels | safe }},
+                datasets: [{
+                    label: "Nombre de commentaires",
+                    backgroundColor: ["#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850",
+                        "#faf24c", "#6a6ce7", "#55f68f", "#D0c309", "#c45000"],
+                    data: {{ values2 | safe }},
+                }]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: 'Nombre de commentaires par catégorie'
+                }
+            }
+        });
+
+        var globalNbNotesChart = new Chart(document.getElementById("globalNbNotesChart"), {
+            type: 'bar',
+            data: {
+                labels: {{ labels | safe }},
+                datasets: [{
+                    label: "Nombre de notes",
+                    data: {{ values3 | safe }},
+                    backgroundColor: ["#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850",
+                    "#faf24c", "#6a6ce7", "#55f68f", "#D0c309", "#c45000"],
+                }]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: 'Nombre de notes par catégorie'
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Variables pour les graphiques par article
+        var articleNotesChart = null;
+        var articleCommentsChart = null;
+        var articleNbNotesChart = null;
+
+        function loadArticlesStats(categoryId) {
+            if (!categoryId) {
+                document.getElementById('articlesStats').style.display = 'none';
+                return;
+            }
+
+            fetch(`/admin/dataviz/commentaires/articles/${categoryId}`)
+                .then(response => response.json())
+                .then(data => {
+                    // Mise à jour du tableau
+                    const tbody = document.getElementById('articlesTableBody');
+                    tbody.innerHTML = '';
+                    data.articles.forEach(article => {
+                        tbody.innerHTML += `
+                            <tr>
+                                <td>${article.nom_meuble}</td>
+                                <td>${article.nb_notes}</td>
+                                <td>${article.moyenne_notes.toFixed(1)}/5</td>
+                                <td>${article.nb_commentaires}</td>
+                                <td>${article.nb_commentaires_valides}</td>
+                            </tr>
+                        `;
+                    });
+
+                    // Mise à jour des graphiques
+                    if (articleNotesChart) articleNotesChart.destroy();
+                    articleNotesChart = new Chart(document.getElementById("articleNotesChart"), {
+                        type: "bar",
+                        data: {
+                            labels: data.labels,
+                            datasets: [{
+                                label: "Note moyenne (/5)",
+                                data: data.values_notes,
+                                fill: false,
+                                backgroundColor: "#3e95cd",
+                                borderColor: "rgb(75,192,192)",
+                                lineTension: 0.1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    max: 5
+                                }
+                            }
+                        }
+                    });
+
+                    if (articleCommentsChart) articleCommentsChart.destroy();
+                    articleCommentsChart = new Chart(document.getElementById("articleCommentsChart"), {
+                        type: 'bar',
+                        data: {
+                            labels: data.labels,
+                            datasets: [{
+                                label: "Nombre de commentaires",
+                                data: data.values_comments,
+                                backgroundColor: "#8e5ea2"
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+
+                    if (articleNbNotesChart) articleNbNotesChart.destroy();
+                    articleNbNotesChart = new Chart(document.getElementById("articleNbNotesChart"), {
+                        type: 'bar',
+                        data: {
+                            labels: data.labels,
+                            datasets: [{
+                                label: "Nombre de notes",
+                                data: data.values_nb_notes,
+                                backgroundColor: "#3cba9f"
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+
+                    document.getElementById('articlesStats').style.display = 'block';
+                })
+                .catch(error => {
+                    console.error('Erreur:', error);
+                    alert('Une erreur est survenue lors du chargement des données');
+                });
+        }
+    </script>
+{% endblock %}

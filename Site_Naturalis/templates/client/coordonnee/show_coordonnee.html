@@ -1,0 +1,94 @@
+{% extends "client/layout_client.html" %}
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">Mes coordonnées</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Informations personnelles</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <p><strong>Nom :</strong> {{ utilisateur.nom }}</p>
+                                <p><strong>Login :</strong> {{ utilisateur.login }}</p>
+                                <p><strong>Email :</strong> {{ utilisateur.email }}</p>
+                                <a href="/client/coordonnee/edit" class="btn btn-primary">Modifier mes informations</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Mes adresses</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="border m-auto p-3">
+                            <table class="table border">
+                                <thead class="thead-dark">
+                                <tr>
+                                    <th>Nom</th>
+                                    <th>Rue</th>
+                                    <th>Code Postal</th>
+                                    <th>Ville</th>
+                                    <th>Commandes</th>
+                                    <th>Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for adresse in adresses %}
+                                    <tr {% if adresse.valide is defined and adresse.valide==0 %} style="color: darkorange"{% endif %}
+                                        {% if adresse_favorite is defined and adresse_favorite is not none and adresse.id_adresse == adresse_favorite.id_adresse_favorite %} style="color: blue"{% endif %}>
+                                        <td>{{ adresse.nom }}</td>
+                                        <td>{{ adresse.rue }}</td>
+                                        <td>{{ adresse.code_postal }}</td>
+                                        <td>{{ adresse.ville }}</td>
+                                        <td>{{ adresse.nb_commandes }}</td>
+                                        <td>
+                                            {% if adresse.valide is defined and adresse.valide==0 %}
+                                                <span style="color: darkorange">*</span>
+                                            {% else %}
+                                                <a class="btn btn-primary"
+                                                   href="/client/coordonnee/edit_adresse?id_adresse={{ adresse.id_adresse }}">
+                                                    Modifier </a>
+                                                <form action="/client/coordonnee/delete_adresse" style="display: inline-block;"
+                                                      method="post">
+                                                    <input type="hidden" name="id_adresse" value="{{ adresse.id_adresse }}">
+                                                    <button class="btn btn-primary"> Supprimer</button>
+                                                </form>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <div>
+                                {% if nb_adresses is defined %}
+                                    {% if nb_adresses <4 %}
+                                        <span style="color: darkorange">* adresse non valide</span>
+                                        <a href="/client/coordonnee/add_adresse" class="btn btn-primary m-2">Ajouter une adresse</a>
+                                    {% endif %}
+                                    <span style="color:green;">( {{ nb_adresses }} / 4 )</span>
+                                {% else %}
+                                    <a href="/client/coordonnee/add_adresse" class="btn btn-primary m-2">Ajouter une adresse</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div>
+                            <a href="/client/meuble/show" class="btn btn-primary m-2">Retour aux meubles </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

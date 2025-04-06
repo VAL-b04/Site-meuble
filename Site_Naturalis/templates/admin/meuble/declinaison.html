@@ -1,0 +1,132 @@
+{% extends "admin/layout_admin.html" %}
+{% block body %}
+    <div class="container-fluid">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h4 class="m-0 font-weight-bold text-primary">Gestion des déclinaisons : {{ meuble.nom_meuble }}</h4>
+                <a href="/admin/meuble/stock" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Retour à la liste des stocks
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Ajouter une déclinaison</h5>
+                            </div>
+                            <div class="card-body">
+                                <form method="post" action="/admin/meuble/declinaison/add">
+                                    <input type="hidden" name="id_meuble" value="{{ meuble.id_meuble }}">
+                                    
+                                    <div class="form-group mb-3">
+                                        <label for="id_materiau">Matériau</label>
+                                        <select class="form-control" id="id_materiau" name="id_materiau" required>
+                                            {% for materiau in materiaux_disponibles %}
+                                                <option value="{{ materiau.id_materiau }}">{{ materiau.libelle_materiau }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-group mb-3">
+                                        <label for="prix">Prix (€)</label>
+                                        <input type="number" class="form-control" id="prix" name="prix" step="0.01" min="0" required>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="stock">Stock</label>
+                                        <input type="number" class="form-control" id="stock" name="stock" required min="0">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" id="is_unique" name="is_unique" value="1">
+                                            <label class="custom-control-label" for="is_unique">Déclinaison unique (taille ou couleur unique)</label>
+                                        </div>
+                                    </div>
+                                    
+                                    <button type="submit" class="btn btn-primary">Ajouter</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Informations sur le meuble</h5>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>ID :</strong> {{ meuble.id_meuble }}</p>
+                                <p><strong>Nom :</strong> {{ meuble.nom_meuble }}</p>
+                                <p><strong>Type :</strong> {{ meuble.libelle_type_meuble }}</p>
+                                <p><strong>Nombre de déclinaisons :</strong> {{ declinaisons|length }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Déclinaisons existantes</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Matériau</th>
+                                        <th>Prix</th>
+                                        <th>Stock</th>
+                                        <th>Unique</th>
+                                        <th>Commandes</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for declinaison in declinaisons %}
+                                        <tr {% if declinaison.stock == 0 %} class="table-danger" {% endif %}>
+                                            <td>{{ declinaison.id_declinaison_meuble }}</td>
+                                            <td>{{ declinaison.libelle_materiau }}</td>
+                                            <td>{{ "%.2f"|format(declinaison.prix_declinaison) }} €</td>
+                                            <td>
+                                                <form action="/admin/meuble/declinaison/update_stock" method="post" class="d-flex">
+                                                    <input type="hidden" name="id_declinaison_meuble" value="{{ declinaison.id_declinaison_meuble }}">
+                                                    <input type="number" name="stock" value="{{ declinaison.stock }}" min="0" class="form-control form-control-sm" style="width: 80px;">
+                                                    <button type="submit" class="btn btn-sm btn-success ms-2">
+                                                        <i class="fas fa-save"></i>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                            <td>
+                                                {% if declinaison.is_unique %}
+                                                    <span class="badge badge-success">Oui</span>
+                                                {% else %}
+                                                    <span class="badge badge-secondary">Non</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ declinaison.nb_commandes }}</td>
+                                            <td>
+                                                {% if declinaison.nb_commandes == 0 %}
+                                                    <form action="/admin/meuble/declinaison/delete" method="post" style="display: inline;">
+                                                        <input type="hidden" name="id_declinaison_meuble" value="{{ declinaison.id_declinaison_meuble }}">
+                                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette déclinaison ?')">
+                                                            <i class="fas fa-trash"></i> Supprimer
+                                                        </button>
+                                                    </form>
+                                                {% else %}
+                                                    <span class="badge bg-warning">Impossible de supprimer (déjà commandé)</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %} 

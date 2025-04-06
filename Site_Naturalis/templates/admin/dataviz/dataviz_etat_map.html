@@ -1,0 +1,136 @@
+{% extends 'admin/layout_admin.html' %}
+
+
+{% block javascripts %}
+    {{ super() }}
+{% endblock %}
+
+{% block javascripts_head %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+{% endblock %}
+
+{% block title %}
+    <title>Statistiques par département</title>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h2 class="text-center mb-4">Statistiques par département</h2>
+
+        <!-- Tableau des statistiques -->
+        <div class="table-responsive mb-4">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Département</th>
+                        <th>Nombre de commandes</th>
+                        <th>Chiffre d'affaires (€)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for element in adresses %}
+                    <tr>
+                        <td>{{ element.dep }}</td>
+                        <td>{{ element.nb_commandes }}</td>
+                        <td>{{ "%.2f"|format(element.chiffre_affaire) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Graphiques -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <canvas id="chartCommandes"></canvas>
+            </div>
+            <div class="col-md-6">
+                <canvas id="chartCA"></canvas>
+            </div>
+        </div>
+
+        <!-- Carte de France -->
+        <div class="text-center mb-4">
+            <div class="btn-group mb-3">
+                <button class="btn btn-primary" onclick="updateMap('commandes')">Nombre de commandes</button>
+                <button class="btn btn-primary" onclick="updateMap('ca')">Chiffre d'affaires</button>
+            </div>
+            <div class="border w-75 m-auto">
+                {% include 'admin/dataviz/franceMap.html' %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Données pour les graphiques
+        const departements = {{ adresses|map(attribute='dep')|list|tojson }};
+        const commandes = {{ adresses|map(attribute='nb_commandes')|list|tojson }};
+        const chiffreAffaire = {{ adresses|map(attribute='chiffre_affaire')|list|tojson }};
+        const indicesCommandes = {{ adresses|map(attribute='indice_commandes')|list|tojson }};
+        const indicesCA = {{ adresses|map(attribute='indice_ca')|list|tojson }};
+
+        // Configuration des graphiques
+        const configCommandes = {
+            type: 'bar',
+            data: {
+                labels: departements,
+                datasets: [{
+                    label: 'Nombre de commandes',
+                    data: commandes,
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        };
+
+        const configCA = {
+            type: 'bar',
+            data: {
+                labels: departements,
+                datasets: [{
+                    label: 'Chiffre d\'affaires (€)',
+                    data: chiffreAffaire,
+                    backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        };
+
+        // Création des graphiques
+        new Chart(document.getElementById('chartCommandes'), configCommandes);
+        new Chart(document.getElementById('chartCA'), configCA);
+
+        // Fonction pour mettre à jour la carte
+        function updateMap(type) {
+            departements.forEach((dep, index) => {
+                const element = document.getElementById(dep);
+                if (element) {
+                    element.setAttribute("fill", "#000000");
+                    element.setAttribute("fill-opacity", type === 'commandes' ? indicesCommandes[index] : indicesCA[index]);
+                }
+            });
+        }
+
+        // Initialisation de la carte
+        updateMap('commandes');
+    </script>
+{% endblock %}
+

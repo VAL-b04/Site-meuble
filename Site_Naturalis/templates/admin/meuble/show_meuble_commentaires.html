@@ -1,0 +1,83 @@
+{% extends 'admin/layout_admin.html' %}
+
+{% block title %}
+    <title>commentaire d'un meuble</title>
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-5 bg-light p-3">
+            <h3>Les commentaires (dates croissantes)</h3>
+            <h3>meuble <span style="color: green">{{ meuble.nom_meuble }}</span></h3>
+        </div>
+    </div>
+
+    <div class="row">
+        <table class="table" style="border: solid #8959A8 1px ">
+            <thead class="thead-dark">
+                <tr>
+                    <th>nom(pseudo)</th>
+                    <th>Commentaires</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if commentaires %}
+                    {% for commentaire in commentaires %}
+                        {% if commentaire.utilisateur_id == 1 %}
+                            <tr class="bg-success bg-opacity-25">  <!-- Réponse de l'admin sur fond vert -->
+                        {% elif commentaire.valider == 1 %}
+                            <tr class="bg-warning bg-opacity-25">  <!-- Commentaire validé sur fond jaune -->
+                        {% else %}
+                            <tr class="bg-light">  <!-- Commentaire non validé sur fond blanc -->
+                        {% endif %}
+                        <td>
+                            {{ commentaire.nom }} ({{ commentaire.login }})
+                            {% if commentaire.utilisateur_id == 1 %}
+                                <br><small><em>Administrateur</em></small>
+                            {% endif %}
+                        </td>
+                        <td>{{ commentaire.commentaire }}</td>
+                        <td>{{ commentaire.date_publication.strftime('%d/%m/%Y %H:%M') }}</td>
+                        <td>
+                            <form action="/admin/meuble/commentaires/delete" style="display: inline-block;" method="post">
+                                <input type="hidden" name="id_meuble" value="{{ commentaire.meuble_id }}">
+                                <input type="hidden" name="id_utilisateur" value="{{ commentaire.utilisateur_id }}">
+                                <input type="hidden" name="date_publication" value="{{ commentaire.date_publication }}">
+                                <button class="btn btn-danger"> Supprimer</button>
+                            </form>
+                            {% if commentaire.utilisateur_id != session['id_user'] %}
+                                <form action="/admin/meuble/commentaires/repondre" style="display: inline-block;" method="GET">
+                                    <input type="hidden" name="id_meuble" value="{{ commentaire.meuble_id }}">
+                                    <input type="hidden" name="id_utilisateur" value="{{ commentaire.utilisateur_id }}">
+                                    <input type="hidden" name="date_publication" value="{{ commentaire.date_publication }}">
+                                    <button class="btn btn-primary"> Répondre</button>
+                                </form>
+                            {% endif %}
+                            {% if commentaire.valider == 0 and commentaire.utilisateur_id != 1 %}
+                                <form action="/admin/meuble/commentaires/valider/single" style="display: inline-block;" method="post">
+                                    <input type="hidden" name="id_meuble" value="{{ commentaire.meuble_id }}">
+                                    <input type="hidden" name="id_utilisateur" value="{{ commentaire.utilisateur_id }}">
+                                    <input type="hidden" name="date_publication" value="{{ commentaire.date_publication }}">
+                                    <button class="btn btn-success"> Valider</button>
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr class="table-warning">
+                        <td>Pas de commentaire</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+        <a class="btn btn-success m-4 col-2"
+           href="/admin/meuble/commentaires/valider?id_meuble={{ meuble.id_meuble }}">Valider tous les commentaires</a>
+        <a class="btn btn-outline-primary btn-lg" href="/admin/meuble/show">Retour vers la page d'accueil</a>
+    </div>
+{% endblock %}

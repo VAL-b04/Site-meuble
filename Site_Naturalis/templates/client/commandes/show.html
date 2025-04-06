@@ -1,0 +1,114 @@
+{% extends "client/layout_client.html" %}
+{% block body %}
+    <div class="container-fluid">
+        {% if meubles_commande %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3>Récapitulatif de la commande</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5>Adresse de livraison</h5>
+                            <p>
+                                {{ commande_adresses.nom_livraison }}<br>
+                                {{ commande_adresses.rue_livraison }}<br>
+                                {{ commande_adresses.code_postal_livraison }} {{ commande_adresses.ville_livraison }}
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Adresse de facturation</h5>
+                            <p>
+                                {% if commande_adresses.adresse_identique == 'adresse_identique' %}
+                                    Adresse identique à l'adresse de livraison
+                                {% else %}
+                                    {{ commande_adresses.nom_facturation }}<br>
+                                    {{ commande_adresses.rue_facturation }}<br>
+                                    {{ commande_adresses.code_postal_facturation }} {{ commande_adresses.ville_facturation }}
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+
+                    <table class="table table-hover">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Article</th>
+                                <th>Déclinaison</th>
+                                <th>Quantité</th>
+                                <th>Prix unitaire</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for ligne in meubles_commande %}
+                                <tr>
+                                    <td>{{ ligne.nom }}</td>
+                                    <td>
+                                        {% if ligne.nb_declinaisons > 1 %}
+                                            <span class="badge bg-info">
+                                                {{ ligne.libelle_materiau }}
+                                            </span>
+                                        {% else %}
+                                            <span class="text-muted">Standard</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ ligne.quantite }}</td>
+                                    <td>{{ "{:,.2f} €".format(ligne.prix) }}</td>
+                                    <td>{{ "{:,.2f} €".format(ligne.prix_ligne) }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot class="table-dark">
+                            <tr>
+                                <td colspan="4" class="text-end"><strong>Total commande :</strong></td>
+                                <td><strong>{{ "{:,.2f} €".format(commande.prix_total) }}</strong></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="card shadow">
+            <div class="card-header py-3">
+                <h4 class="text-primary m-0 font-weight-bold">Historique des commandes</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Date de commande</th>
+                                <th>Nombre d'articles</th>
+                                <th>Montant total</th>
+                                <th>État</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for commande in commandes %}
+                                <tr {% if commande.etat_id == 1 %}class="table-warning"{% endif %}>
+                                    <td>{{ commande.date_achat.strftime('%d/%m/%Y') }}</td>
+                                    <td>{{ commande.nbr_meubles }}</td>
+                                    <td>{{ "{:,.2f} €".format(commande.prix_total) }}</td>
+                                    <td>
+                                        <span class="badge {% if commande.etat_id == 1 %}bg-warning{% else %}bg-success{% endif %}">
+                                            {{ commande.libelle }}
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="/client/commande/show?id_commande={{ commande.id_commande }}" 
+                                           class="btn btn-primary btn-sm">
+                                            <i class="fas fa-eye"></i> Détails
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
