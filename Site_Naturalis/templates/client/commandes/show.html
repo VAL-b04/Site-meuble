@@ -62,7 +62,7 @@
                         <tfoot class="table-dark">
                             <tr>
                                 <td colspan="4" class="text-end"><strong>Total commande :</strong></td>
-                                <td><strong>{{ "{:,.2f} €".format(commande.prix_total) }}</strong></td>
+                                <td><strong>{{ "{:,.2f} €".format(meubles_commande|sum(attribute='prix_ligne')) }}</strong></td>
                             </tr>
                         </tfoot>
                     </table>
