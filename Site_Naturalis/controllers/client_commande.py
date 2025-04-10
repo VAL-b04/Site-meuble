@@ -141,6 +141,7 @@ def client_commande_add():
 def client_commande_show():
     mycursor = get_db().cursor()
     id_client = session['id_user']
+    print(f"ID client: {id_client}")
     
     # Récupération de toutes les commandes avec leur prix total et nombre d'articles
     sql = '''
@@ -148,10 +149,10 @@ def client_commande_show():
         c.date_achat,
         c.etat_id,
         e.libelle_etat AS libelle,
-        SUM(lc.quantite_lc) AS nbr_meubles,
-        SUM(lc.prix_lc * lc.quantite_lc) AS prix_total
+        COALESCE(SUM(lc.quantite_lc), 0) AS nbr_meubles,
+        COALESCE(SUM(lc.prix_lc * lc.quantite_lc), 0) AS prix_total
     FROM commande c
-    JOIN ligne_commande lc ON c.id_commande = lc.commande_id
+    LEFT JOIN ligne_commande lc ON c.id_commande = lc.commande_id
     JOIN etat e ON c.etat_id = e.id_etat
     WHERE c.utilisateur_id = %s
     GROUP BY c.id_commande, c.date_achat, c.etat_id, e.libelle_etat
@@ -159,10 +160,15 @@ def client_commande_show():
     '''
     mycursor.execute(sql, str(id_client))
     commandes = mycursor.fetchall()
+    print(f"Nombre de commandes trouvées: {len(commandes)}")
+    for commande in commandes:
+        print(f"Commande {commande['id_commande']}: {commande['nbr_meubles']} articles, {commande['prix_total']}€")
     
     meubles_commande = None
     commande_adresses = None
     id_commande = request.args.get('id_commande', None)
+    print(f"ID commande demandé: {id_commande}")
+    
     if id_commande != None:
         # Récupération des articles de la commande avec leurs déclinaisons
         sql = '''
@@ -180,6 +186,7 @@ def client_commande_show():
         '''
         mycursor.execute(sql, str(id_commande))
         meubles_commande = mycursor.fetchall()
+        print(f"Nombre d'articles dans la commande: {len(meubles_commande) if meubles_commande else 0}")
 
         # Récupération des adresses de la commande
         sql = '''
@@ -199,6 +206,7 @@ def client_commande_show():
         '''
         mycursor.execute(sql, str(id_commande))
         commande_adresses = mycursor.fetchone()
+        print(f"Adresses de la commande trouvées: {commande_adresses is not None}")
 
     return render_template('client/commandes/show.html',
                            commandes=commandes,
